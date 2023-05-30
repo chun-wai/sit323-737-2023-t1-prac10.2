@@ -1,20 +1,20 @@
-# Using nginx base image and perform healthcheck
-FROM nginx:latest
+# Use the official Node.js image as the base image
+FROM node:14
 
-HEALTHCHECK --interval=35s --timeout=4s CMD curl -f https://localhost/ || exit 1
-
-FROM node:16
-
-# Create app directory
+# Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Install app dependencies
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
+# Install app dependencies
 RUN npm install
 
-# Bundle app source
-COPY server.js .
+# Copy the rest of the app source code
+COPY . .
 
-EXPOSE 8080
-CMD [ "node", "server.js" ]
+# Expose the port that the app listens on
+EXPOSE 3000
+
+# Start the app
+CMD [ "node", "app.js" ]
